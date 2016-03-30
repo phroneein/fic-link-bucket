@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ao3 Link Collect</title>
+  <title>ao3 Link Bucket</title>
   <style>
     body: { padding: 10px; }
   </style>
@@ -16,20 +16,21 @@
  
   <!-- 'GET AUTHOR USERNAME' -->
 	<div class='wrapper'>
-			<form id='nameForm'>
-			<div class='form-uname'>
-					<label id='nameLable' for='nameField'>Create a username:</label>
-					<input id='nameField' type='text' maxlength='25'></input>
-			</div>
-			<div class='form-sub'>
-					<button id='subButton' type='button'>Print your name!</button>
-			</div>
+		<form id='nameForm'>
+		<div class='form-uname'>
+			<label id='nameLabel' for='nameField'>Input author username:</label>
+			<input id='nameField' type='text' maxlength='25'></input>
+		</div>
+		<div class='form-sub'>
+			<button id='subButton' type='button'>Get your links!</button>
+		</div>
 	</form>
 
 	<div><p id='result'></p></div>
 	</div>
   <!-- END OF 'GET AUTHOR USERNAME' -->
   
+	<div><p id='printAuthorURL'></p></div>
 	<div><p id='HTMLfromLink'></p></div>
 	
   <script src="content.js"></script>
