@@ -18,7 +18,7 @@
 		<form id='nameForm'>
 		<div class='form-uname'>
 			<label id='nameLabel' for='nameField'>Input author username:</label>
-			<input id='nameField' type='text' maxlength='25'></input>
+			<input id='nameField' type='text' maxlength='25' onkeypress="return runScript(event)"></input>
 		</div>
 		<div class='form-sub'>
 			<button id='subButton' type='button'>Get your links!</button>
@@ -32,6 +32,7 @@
 	<div><p id='printAuthorURL'></p></div>
 	<div><p id='printLinkList'></p></div>
 	<div><p id='HTMLfromLink'></p></div>
+	<div><p id='TestDiv'></p></div>
 	
   <script src="content.js"></script>
   
