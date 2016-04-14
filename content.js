@@ -14,6 +14,7 @@ function sendRequest(url, callback) {
 function sortAlphaUniq(array) {
   array = array.sort(); 		// sort alphabetical order
 	array = uniq_fast(array); // removes duplicates from links list
+	return array;
 }
 
 //parses webpage HTML for links
@@ -22,14 +23,13 @@ function parseHTMLforLinks(response) {
 	el.innerHTML = response;
 	var nl = el.getElementsByTagName('a');    // Live NodeList of anchor elements
 	var arr = Array.prototype.slice.call(nl); // convert NodeList to array
-  sortAlphaUniq(arr);												// sorts alphabetically, removes duplicates
-	return arr;																// RETURN converted array 
+  var arrNew = sortAlphaUniq(arr);					// sorts alphabetically, removes duplicates
+	return arrNew;														// RETURN converted array 	
 }
 
 //Removes duplicates from links list
 function uniq_fast(a) {
-	var seen = {};
-	var out = [];
+	var seen = {}, out = [];
 	var len = a.length;
 	var j = 0;
 	for(var i = 0; i < len; i++) {
@@ -42,14 +42,20 @@ function uniq_fast(a) {
   return out;
 }
 
+//checks if value is a number
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 //Gets story IDs by author
-function getStoryIDs(arr){
+function getStoryIDs(eleArr){ //pass in array of elements(a)
   var storyIDs = [];
-	for (var i=0, j=arr.length; i<j; i++) {
-		var temp = arr[i].split("/");//splits each URL into sections by '/'
+	for (var i=0, j=eleArr.length; i<j; i++) {
+		var temp = eleArr[i].href.split("/");//splits each URL into sections by '/'
 		for (var i2=0; i2 < temp.length; i2++){
-			if (temp[i2] === "works"){ //adds numbers following "works/" to storyID array
-			  storyIDs.push(temp[i2+1]);
+			if (temp[i2] === "works" && i2+1 < temp.length){ //adds numbers following "works/" to storyID array
+				if (isNumeric(temp[i2+1]))  //if value is number
+				  storyIDs.push(temp[i2+1]);//add to storyIDs array
       }
 		}
 	}	
@@ -58,50 +64,31 @@ function getStoryIDs(arr){
 
 //printsList
 function printList(response) {
-	var arr = [];
+	var arr = [], storyIDs = [], storyIDsAll = [];
+	var printTemp1 = document.getElementById('printTemp1');	
+	var printLL = document.getElementById('printLinkList');
+	var printInner = document.getElementById('TestDiv');	
 	arr = parseHTMLforLinks(response);  //gets links from HTML
-	var temp1 = [];
-	var temp2 = [];
-	for (var i2=0, j2=arr.length; i2<j2; i2++) { //make copy of arr
-		temp1[i2] = arr[i2];
-		temp2[i2] = arr[i2];
-	}
-	var storyIDs = [];
-	var printTemp1 = document.getElementById('printTemp1');
-//	printTemp1.style.display = 'none'; // HIDE this div
-	printTemp1.innerHTML = "Printing copy of arr[] values: <br>";
-	for (i2=0, j2=temp1.length; i2<10; i2++) { //debug replace j2 w/ 10
-		printTemp1.innerHTML += i2+1 + '. ' + temp1[i2] + '<br>';
-	}
-	var temp = ["tester/works/321", "test/works/123"];//works
 
-	var arrSplit = [];
-	tempStringArr = temp2[1];
-	alert(temp2[1]);
-	var arrSplit = arr[1].href.split('/');
-	alert("arrSplit = " + arrSplit.join('\n'))
-	for (var i=0, j=arr.length; i<j; i++) {
-		var tempSplit = arr[i].href.split("/");//splits each URL into sections by '/'
-		for (var i2=0; i2 < tempSplit.length; i2++){
-			if (tempSplit[i2] === "works" && i2+1 < tempSplit.length){ //adds numbers following "works/" to storyID array
-			  storyIDs.push(tempSplit[i2+1]);
-      }
-		}
+//	printTemp1.style.display = 'none'; // HIDEs this div
+	printTemp1.innerHTML = "Printing arr[] values: <br>";
+	for (var i=0, j=arr.length; i<10; i++) { //debug replace j2 w/ 10
+		printTemp1.innerHTML += i+1 + '. ' + arr[i] + '<br>';
+		printLL.innerHTML += i+1 + '. ' + arr[i] + '<br>';
 	}
-	sortAlphaUniq(storyIDs);
+
+	storyIDsAll = getStoryIDs(arr);				 //gets story ids from element array
+	storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
 	printTemp1.innerHTML += "<br> StoryIDs: <br>";
 	for (i=0, j=storyIDs.length; i<j; i++){
 	  printTemp1.innerHTML += storyIDs[i] + "<br>";
 	}
-	
-	var printLL = document.getElementById('printLinkList');
-	printLL.style.display = 'none'; // HIDE this div
-	for (var i=0, j=arr.length; i<10; i++) { //DEBUG: replace 'j' w/ '10'
-		printLL.innerHTML += i+1 + '. ' + arr[i] + '<br>';
-	}
+
+	printLL.style.display = 'none'; // HIDEs this div
 	printLL.innerHTML = printLL.innerHTML.replace(/http:\/\//g,'');
-	var printInner = document.getElementById('TestDiv');
-	printInner.innerHTML = '<br>Unique, sorted list of links: <br><br>' + printLL.innerHTML.replace(/chrome-extension:\/\/mhnpeajhbneafhmljmanlnonhdlgpfja/g,'archiveofourown.org/users/deritine');
+	printInner.innerHTML = '<br>Unique, sorted list of links: <br>' 
+	                       + printLL.innerHTML.replace(/chrome-extension:\/\/mhnpeajhbneafhmljmanlnonhdlgpfja/g,
+												 'archiveofourown.org/users/deritine');
 	printInner.innerHTML = printInner.innerHTML.sort().replace(/http:\/\//g, '');
 }
 
