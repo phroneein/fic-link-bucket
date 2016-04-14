@@ -63,29 +63,35 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 }
 
 //printsList
-function printList(response) {
+function printList(ao3LinkToAuthor, response) {
 	var arr = [], storyIDs = [], storyIDsAll = [];
-	var printTemp1 = document.getElementById('printTemp1');	
+	var printArr = document.getElementById('printArr');	
 	var printLL = document.getElementById('printLinkList');
+	var printWorks = document.getElementById('printWorks');
 	var printInner = document.getElementById('TestDiv');	
 	arr = parseHTMLforLinks(response);  //gets links from HTML
 
-//	printTemp1.style.display = 'none'; // HIDEs this div
-	printTemp1.innerHTML = "Printing arr[] values: <br>";
-	for (var i=0, j=arr.length; i<10; i++) { //debug replace j2 w/ 10
-		printTemp1.innerHTML += i+1 + '. ' + arr[i] + '<br>';
+	printArr.style.display = 'none'; // HIDEs this div
+	printArr.innerHTML = "Printing arr[] values: <br>";
+	for (var i=0, j=arr.length; i<j; i++) { //debug replace j w/ 10
+		printArr.innerHTML += i+1 + '. ' + arr[i] + '<br>';
 		printLL.innerHTML += i+1 + '. ' + arr[i] + '<br>';
 	}
 
 	storyIDsAll = getStoryIDs(arr);				 //gets story ids from element array
 	storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
-	printTemp1.innerHTML += "<br> StoryIDs: <br>";
+	printWorks.innerHTML += "<br> StoryIDs: <br>";
 	for (i=0, j=storyIDs.length; i<j; i++){
-	  printTemp1.innerHTML += storyIDs[i] + "<br>";
+	  printWorks.innerHTML += storyIDs[i] + "<br>";
+	}
+	printWorks.innerHTML += "<br> Story URLs: <br>";
+	for (i=0, j=storyIDs.length; i<j; i++){
+	  printWorks.innerHTML += ao3LinkToAuthor + "/" + storyIDs[i] + "<br>";
 	}
 
 	printLL.style.display = 'none'; // HIDEs this div
 	printLL.innerHTML = printLL.innerHTML.replace(/http:\/\//g,'');
+	printInner.style.display = 'none'; // HIDEs this div
 	printInner.innerHTML = '<br>Unique, sorted list of links: <br>' 
 	                       + printLL.innerHTML.replace(/chrome-extension:\/\/mhnpeajhbneafhmljmanlnonhdlgpfja/g,
 												 'archiveofourown.org/users/deritine');
@@ -95,7 +101,7 @@ function printList(response) {
 // the function which handles the input field logic
 function getUserName() {
   var nameField = 'deritine'; //hard-coded for testing purposes
-	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + nameField;
+	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + nameField + '/works';
 	var result = document.getElementById('result');
 	
 	if (nameField.length < 3) {
@@ -107,7 +113,7 @@ function getUserName() {
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
 	Printao3AuthorURL.textContent = 'Author URL: ' + ao3LinkToAuthor;
 	sendRequest(ao3LinkToAuthor, function (response) { 	//Get HTML from URL based on input
-		printList(response); //Parse HTML for links, and print in list
+		printList(ao3LinkToAuthor, response); //Parse HTML for links, and print in list
 	});
 }
 var subButton = document.getElementById('subButton'); 
