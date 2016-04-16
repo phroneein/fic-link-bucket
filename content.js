@@ -69,31 +69,32 @@ function printList(ao3LinkToAuthorWorks, response) {
 	var printLL = document.getElementById('printLinkList');
 	var printWorks = document.getElementById('printWorks');
 	var printInner = document.getElementById('TestDiv');	
+	printArr.style.display = 'none'; // HIDEs this div
+	printLL.style.display = 'none'; // HIDEs this div	
+	printInner.style.display = 'none'; // HIDEs this div
+	
 	arr = parseHTMLforLinks(response);  //gets links from HTML
 
-	printArr.style.display = 'none'; // HIDEs this div
 	printArr.innerHTML = "Printing arr[] values: <br>";
-	for (var i=0, j=arr.length; i<j; i++) { //debug replace j w/ 10
-		printArr.innerHTML += i+1 + '. ' + arr[i] + '<br>';
-		printLL.innerHTML += i+1 + '. ' + arr[i] + '<br>';
+	for (var i=1, j=arr.length+1; i<j; i++) { //debug replace j w/ 10
+		printArr.innerHTML += i + '. ' + arr[i] + '<br>';
+		printLL.innerHTML += i + '. ' + arr[i] + '<br>';
 	}
 
 	//print story IDs
 	storyIDsAll = getStoryIDs(arr);				 //gets story ids from element array
 	storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
-	printWorks.innerHTML += "<br> StoryIDs: <br>";
+	printWorks.innerHTML += "StoryIDs: <br>".bold();
 	for (i=0, j=storyIDs.length; i<j; i++){
 	  printWorks.innerHTML += storyIDs[i] + "<br>";
 	}
-	//print URLs
-	printWorks.innerHTML += "<br> Story URLs: <br>";
+	//print URLs from story IDs
+	printWorks.innerHTML += "<br>Story URLs: <br>".bold();
 	for (i=0, j=storyIDs.length; i<j; i++){
-	  printWorks.innerHTML += ao3LinkToAuthor + "/" + storyIDs[i] + "<br>";
+		printWorks.innerHTML += ao3LinkToAuthorWorks + "/" + storyIDs[i] + "<br>";
 	}
 
-	printLL.style.display = 'none'; // HIDEs this div
 	printLL.innerHTML = printLL.innerHTML.replace(/http:\/\//g,'');
-	printInner.style.display = 'none'; // HIDEs this div
 	printInner.innerHTML = '<br>Unique, sorted list of links: <br>' 
 	                       + printLL.innerHTML.replace(/chrome-extension:\/\/mhnpeajhbneafhmljmanlnonhdlgpfja/g,
 												 'archiveofourown.org/users/deritine');
@@ -110,12 +111,12 @@ function getUserName() {
 	if (nameField.length < 3) {
 		result.textContent = 'Username must contain at least 3 characters';
 	} else {
-		result.textContent = 'Author: ' + nameField;
+		result.innerHTML = 'Author: '.bold() + nameField;
 	}
 	
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
-	Printao3AuthorURL.textContent = 'Author URL: ' + ao3LinkToAuthor;
-	sendRequest(ao3LinkToAuthorWorks, function (response) { 	//Get HTML from URL based on input
+	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
+	sendRequest(ao3LinkToAuthor, function (response) { 	//Get HTML from URL based on input
 		printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list
 	});
 }
