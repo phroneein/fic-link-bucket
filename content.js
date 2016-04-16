@@ -17,16 +17,6 @@ function sortAlphaUniq(array) {
 	return array;
 }
 
-//parses webpage HTML for links
-function parseHTMLforLinks(response) {
-	var el = document.createElement('html');  //create dummy HTML document to create NodeList of links
-	el.innerHTML = response;
-	var nl = el.getElementsByTagName('a');    // Live NodeList of anchor elements
-	var arr = Array.prototype.slice.call(nl); // convert NodeList to array
-  var arrNew = sortAlphaUniq(arr);					// sorts alphabetically, removes duplicates
-	return arrNew;														// RETURN converted array 	
-}
-
 //Removes duplicates from links list
 function uniq_fast(a) {
 	var seen = {}, out = [];
@@ -40,6 +30,16 @@ function uniq_fast(a) {
 	  }
 	}
   return out;
+}
+
+//parses webpage HTML for links
+function parseHTMLforLinks(response) {
+	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
+	el.innerHTML = response;									// add html to DOM
+	var nl = el.getElementsByTagName('a');    // Live NodeList of anchor elements
+	var arr = Array.prototype.slice.call(nl); // convert NodeList to array
+  var arrNew = sortAlphaUniq(arr);					// sorts alphabetically, removes duplicates
+	return arrNew;														// RETURN converted array 	
 }
 
 //checks if value is a number
@@ -62,19 +62,35 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 	return storyIDs;
 }
 
-//printsList
+//Adds a formatted array to Div InnerHTML
+function printArrayToDivInnerHTML(divName, array) {
+  for (i=0, j=array.length; i<j; i++){
+	  divName.innerHTML += array[i] + "<br>";
+	}
+}
+
+//Prints links of works from author
+function printAuthorFicLinks (divName, storyIDs, linkBeginning) {
+	divName.innerHTML += "<br>Story URLs: <br>".bold();
+	for (i=0, j=storyIDs.length; i<j; i++){
+		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "<br>";
+	}
+}
+
+//Prints list of storyIDs and storyURLs
 function printList(ao3LinkToAuthorWorks, response) {
-	var arr = [], storyIDs = [], storyIDsAll = [];
-	var printArr = document.getElementById('printArr');	
-	var printLL = document.getElementById('printLinkList');
-	var printWorks = document.getElementById('printWorks');
-	var printInner = document.getElementById('TestDiv');	
-	printArr.style.display = 'none'; // HIDEs this div
-	printLL.style.display = 'none'; // HIDEs this div	
-	printInner.style.display = 'none'; // HIDEs this div
+	var arr = [], storyIDs = [], storyIDsAll = [];          //initialize arrays
+	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
+	var printWorks = document.getElementById('printWorks'); //VISIBLE	
+	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
+	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list
+	printArr.style.display = 'none'; 				 // HIDES 'printArr' div
+	printLL.style.display = 'none'; 				 // HIDES 'printLinkList' div	
+	printSortedLinks.style.display = 'none'; // HIDES 'TestDiv' div
 	
 	arr = parseHTMLforLinks(response);  //gets links from HTML
 
+	//print arr[] values in printLL, printArr
 	printArr.innerHTML = "Printing arr[] values: <br>";
 	for (var i=1, j=arr.length+1; i<j; i++) { //debug replace j w/ 10
 		printArr.innerHTML += i + '. ' + arr[i] + '<br>';
@@ -84,21 +100,17 @@ function printList(ao3LinkToAuthorWorks, response) {
 	//print story IDs
 	storyIDsAll = getStoryIDs(arr);				 //gets story ids from element array
 	storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
-	printWorks.innerHTML += "StoryIDs: <br>".bold();
-	for (i=0, j=storyIDs.length; i<j; i++){
-	  printWorks.innerHTML += storyIDs[i] + "<br>";
-	}
+	printWorks.innerHTML += "Story IDs: <br>".bold();
+	printArrayToDivInnerHTML(printWorks, storyIDs);
 	//print URLs from story IDs
-	printWorks.innerHTML += "<br>Story URLs: <br>".bold();
-	for (i=0, j=storyIDs.length; i<j; i++){
-		printWorks.innerHTML += ao3LinkToAuthorWorks + "/" + storyIDs[i] + "<br>";
-	}
+	printAuthorFicLinks(printWorks, storyIDs, ao3LinkToAuthorWorks);
 
+	//print formatted list of links
 	printLL.innerHTML = printLL.innerHTML.replace(/http:\/\//g,'');
-	printInner.innerHTML = '<br>Unique, sorted list of links: <br>' 
+	printSortedLinks.innerHTML = '<br>Unique, sorted list of links: <br>' 
 	                       + printLL.innerHTML.replace(/chrome-extension:\/\/mhnpeajhbneafhmljmanlnonhdlgpfja/g,
 												 'archiveofourown.org/users/deritine');
-	printInner.innerHTML = printInner.innerHTML.sort().replace(/http:\/\//g, '');
+	printSortedLinks.innerHTML = printSortedLinks.innerHTML.sort().replace(/http:\/\//g, '');
 }
 
 // the function which handles the input field logic
