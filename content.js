@@ -63,7 +63,7 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 }
 
 //printsList
-function printList(ao3LinkToAuthor, response) {
+function printList(ao3LinkToAuthorWorks, response) {
 	var arr = [], storyIDs = [], storyIDsAll = [];
 	var printArr = document.getElementById('printArr');	
 	var printLL = document.getElementById('printLinkList');
@@ -78,12 +78,14 @@ function printList(ao3LinkToAuthor, response) {
 		printLL.innerHTML += i+1 + '. ' + arr[i] + '<br>';
 	}
 
+	//print story IDs
 	storyIDsAll = getStoryIDs(arr);				 //gets story ids from element array
 	storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
 	printWorks.innerHTML += "<br> StoryIDs: <br>";
 	for (i=0, j=storyIDs.length; i<j; i++){
 	  printWorks.innerHTML += storyIDs[i] + "<br>";
 	}
+	//print URLs
 	printWorks.innerHTML += "<br> Story URLs: <br>";
 	for (i=0, j=storyIDs.length; i<j; i++){
 	  printWorks.innerHTML += ao3LinkToAuthor + "/" + storyIDs[i] + "<br>";
@@ -101,7 +103,8 @@ function printList(ao3LinkToAuthor, response) {
 // the function which handles the input field logic
 function getUserName() {
   var nameField = 'deritine'; //hard-coded for testing purposes
-	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + nameField + '/works';
+	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + nameField;
+	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var result = document.getElementById('result');
 	
 	if (nameField.length < 3) {
@@ -112,8 +115,8 @@ function getUserName() {
 	
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
 	Printao3AuthorURL.textContent = 'Author URL: ' + ao3LinkToAuthor;
-	sendRequest(ao3LinkToAuthor, function (response) { 	//Get HTML from URL based on input
-		printList(ao3LinkToAuthor, response); //Parse HTML for links, and print in list
+	sendRequest(ao3LinkToAuthorWorks, function (response) { 	//Get HTML from URL based on input
+		printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list
 	});
 }
 var subButton = document.getElementById('subButton'); 
