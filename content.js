@@ -50,12 +50,13 @@ function isNumeric(n) {
 //Gets story IDs by author
 function getStoryIDs(eleArr){ //pass in array of elements(a)
   var storyIDs = [];
-	for (var i=0, j=eleArr.length; i<j; i++) {
+	for (var i=0, len=eleArr.length; i<len; i++) {
 		var temp = eleArr[i].href.split("/");//splits each URL into sections by '/'
-		for (var i2=0; i2 < temp.length; i2++){
-			if (temp[i2] === "works" && i2+1 < temp.length){ //adds numbers following "works/" to storyID array
-				if (isNumeric(temp[i2+1]))  //if value is number
-				  storyIDs.push(temp[i2+1]);//add to storyIDs array
+		for (var j=0, len2=temp.length; j<len2; j++){
+			var next = j+1;
+			if (temp[j]==="works" && next<len2){ //adds numbers following "works/" to storyID array
+				if (isNumeric(temp[next]))  //if value is number
+				  storyIDs.push(temp[next]);//add to storyIDs array
       }
 		}
 	}	
@@ -69,7 +70,7 @@ function clearOutput(){
 	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
 	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list   
 	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML 
-	                   = printSortedLinks.innerHTML = '';
+	                   = printSortedLinks.innerHTML = '';		//CLEARS ALL OUTPUT
 }
 
 //Adds a formatted array to Div InnerHTML
