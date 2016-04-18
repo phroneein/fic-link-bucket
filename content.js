@@ -62,6 +62,16 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 	return storyIDs;
 }
 
+//Clears printed list of links
+function clearOutput(){
+	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
+	var printWorks = document.getElementById('printWorks'); //VISIBLE	//prints storyIDs and URLs
+	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
+	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list   
+	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML 
+	                   = printSortedLinks.innerHTML = '';
+}
+
 //Adds a formatted array to Div InnerHTML
 function printArrayToDivInnerHTML(divName, array) {
   for (i=0, j=array.length; i<j; i++){
@@ -115,18 +125,17 @@ function printList(ao3LinkToAuthorWorks, response) {
 
 // the function which handles the input field logic
 function getUserName() {
-  var nameField = 'deritine'; //hard-coded for testing purposes
-	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + nameField;
+  clearOutput(); //clears output on subsequent calls
+	var authorName = document.getElementById('nameField').value; //gets user inputted author
+	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
-	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/deritine/pseuds/deritine/works';
-	var ao3LinkToFrayach = 'http://archiveofourown.org/users/Frayach/pseuds/Frayach';
-	var ao3LinkToFrayachWorks = 'http://archiveofourown.org/users/Frayach/pseuds/Frayach/works';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
 	var result = document.getElementById('result');
 	
-	if (nameField.length < 3) {
-		result.textContent = 'Username must contain at least 3 characters';
+	if (authorName.length < 3) {
+		result.textContent = 'ERROR:  Username must contain at least 3 characters';
 	} else {
-		result.innerHTML = 'Author: '.bold() + nameField;
+		result.innerHTML = 'Author: '.bold() + authorName;
 	}
 	
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
@@ -135,5 +144,24 @@ function getUserName() {
 		printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
 	});
 }
+// hard-coded test function
+function getUserNameHARD() {
+  clearOutput();
+	var authorName = 'deritine';
+	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
+	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
+	var result = document.getElementById('result');
+	result.innerHTML = 'Author: '.bold() + authorName;
+	
+	var Printao3AuthorURL = document.getElementById('printAuthorURL');
+	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
+	sendRequest(ao3LinkToAuthorWorks2, function (response) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
+		printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
+	});
+}
+
 var subButton = document.getElementById('subButton'); 
-subButton.addEventListener('click', getUserName, false);// use an eventlistener for the event
+subButton.addEventListener('click', getUserName, false);// use an event listener for the event
+var testButton = document.getElementById('testButton'); 
+testButton.addEventListener('click', getUserNameHARD, false);
