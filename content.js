@@ -118,6 +118,9 @@ function getUserName() {
   var nameField = 'deritine'; //hard-coded for testing purposes
 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + nameField;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/deritine/pseuds/deritine/works';
+	var ao3LinkToFrayach = 'http://archiveofourown.org/users/Frayach/pseuds/Frayach';
+	var ao3LinkToFrayachWorks = 'http://archiveofourown.org/users/Frayach/pseuds/Frayach/works';
 	var result = document.getElementById('result');
 	
 	if (nameField.length < 3) {
@@ -128,8 +131,8 @@ function getUserName() {
 	
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
 	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
-	sendRequest(ao3LinkToAuthor, function (response) { 	//Get HTML from URL based on input
-		printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list
+	sendRequest(ao3LinkToAuthorWorks2, function (response) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
+		printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
 	});
 }
 var subButton = document.getElementById('subButton'); 
