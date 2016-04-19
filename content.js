@@ -10,6 +10,19 @@ function sendRequest(url, callback) {
 	xhr.send();
 }
 
+//get number of author works pages
+function getNumWorksPages(arr) {
+	//get number of pages of author works
+	var numWorksPages = 1;
+	for (var i=0, len=arr.length; i<len; i++) {
+  	var tempStr = String(arr[i]);
+		if (tempStr.includes("works?page="))//format of URLs -- ex:"works?page=6"
+			numWorksPages++;									//if link includes "works?page=" then author has another page of works links
+	}
+	alert("Number of Works Pages = " + numWorksPages);
+	return numWorksPages;
+}
+
 //sorts arrays in alphabetical order and removes duplicates
 function sortAlphaUniq(array) {
   array = array.sort(); 		// sort alphabetical order
@@ -108,6 +121,18 @@ function printList(ao3LinkToAuthorWorks, response) {
 		printLL.innerHTML += i + '. ' + arr[i] + '<br>';
 	}
 
+	var numWorksPages = getNumWorksPages(arr);//get number of pages of author works
+	var authorName = 'Frayach'; //hard-coded
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
+	var ao3Works = 'http://archiveofourown.org/users/' + authorName + '/pseuds/'+ authorName +'/works?page=';
+	for (var i=1; i<numWorksPages+1; i++) {
+	  var tempWorksPage = ao3Works.concat(i.toString());
+//		sendRequest(tempWorksPage, function (response) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
+//			printList(ao3LinkToAuthorWorks, response); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
+//		});
+		alert(tempWorksPage);
+	}
+	
 	//print story IDs
 	storyIDsAll = getStoryIDs(arr);				 //gets story ids from element array
 	storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
