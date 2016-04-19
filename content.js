@@ -201,3 +201,22 @@ var subButton = document.getElementById('subButton');
 subButton.addEventListener('click', getUserName, false);// use an event listener for the event
 var testButton = document.getElementById('testButton'); 
 testButton.addEventListener('click', getUserNameHARD, false);
+
+var copyURLsBtn = document.querySelector('#copyURLsButton');
+copyURLsBtn.addEventListener('click', function () {
+  var urlField = document.querySelector('#printURLs');
+  var range = document.createRange(); // create a Range object
+  range.selectNode(urlField);					// set the Node to select the "range"
+  window.getSelection().addRange(range);// add the Range to the set of window selections
+  document.execCommand('copy');				// execute 'copy', can't 'cut' in this case
+	window.getSelection.removeAllRanges();
+	document.selection.empty();
+}, false);
+
+
+
+
+
+
+
+
