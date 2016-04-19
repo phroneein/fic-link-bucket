@@ -23,8 +23,8 @@ function getNumWorksPages(arr) {
 }
 
 //sorts arrays in alphabetical order and removes duplicates
-function sortAlphaUniq(array) {
-  array = array.sort(); 		// sort alphabetical order
+function sortAscUniq(array) {
+	array = array.sort(function(a, b){return a-b}); //sort numerical/ascending order
 	array = uniq_fast(array); // removes duplicates from links list
 	return array;
 }
@@ -59,7 +59,7 @@ function parseHTMLforLinks(response) {
 	el.innerHTML = response;									// add html to DOM
 	var nl = el.getElementsByTagName('a');    // Live NodeList of anchor elements
 	var arr = Array.prototype.slice.call(nl); // convert NodeList to array
-  var arrNew = sortAlphaUniq(arr);					// sorts alphabetically, removes duplicates
+  var arrNew = sortAscUniq(arr);					// sorts alphabetically, removes duplicates
 	return arrNew;														// RETURN converted array 	
 }
 
@@ -91,8 +91,7 @@ function clearOutput(){ //used after "Get links!" button is clicked
 	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
 	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
 	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list   
-	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML = printURLs.innerHTML
-	                   = printSortedLinks.innerHTML = '';		//CLEARS ALL OUTPUT
+	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML = printURLs.innerHTML = printSortedLinks.innerHTML = '';		//CLEARS ALL OUTPUT
 }
 
 //Adds a formatted array to Div InnerHTML
@@ -132,7 +131,7 @@ function getNextPageLinks(ao3LinkToAuthorWorks, response) {
 	
   var arr = parseHTMLforLinks(response);    //gets links from HTML
 	var storyIDsAll = getStoryIDs(arr);		    //gets story IDs from element array
-	var storyIDs = sortAlphaUniq(storyIDsAll);//alphabetical, unique values
+	var storyIDs = sortAscUniq(storyIDsAll);//alphabetical, unique values
 	
 	printArrayToDivInnerHTML(printWorks, storyIDs);  								//print storyIDs
 	printAuthorFicLinks(printURLs, storyIDs, ao3LinkToAuthorWorks); //print storyURLs
@@ -144,7 +143,7 @@ function getNewNextPageLinks(ao3LinkToAuthorWorks, response) {
 	var printURLs = document.getElementById('printURLs');		//VISIBLE
 	
 	var arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
-	arrAll = sortAlphaUniq(arrAll);
+	arrAll = sortAscUniq(arrAll);
 	
 	printNewArrayToDivInnerHTML(printWorks, storyIDs);  								//print storyIDs
 	printNewAuthorFicLinks(printURLs, storyIDs, ao3LinkToAuthorWorks); //print storyURLs
@@ -154,7 +153,7 @@ function getNewNextPageLinks(ao3LinkToAuthorWorks, response) {
 function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
   var arr = parseHTMLforLinks(responseNext);//gets links from HTML
 	var storyIDsNext = getStoryIDs(arr);		  //gets story IDs from element array
-	var storyIDs = sortAlphaUniq(storyIDsNext);//alphabetical, unique storyID values
+	var storyIDs = sortAscUniq(storyIDsNext);//alphabetical, unique storyID values
   var arrAll = arrAll.concat(storyIDs);			//add new storyIDs to arrAll (all links array)
   //alert(arrAll);	
 	return arrAll;	//return updated array
@@ -162,7 +161,7 @@ function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
 
 //test function
 function printArrAll(arrAll) {
-	var arrAll = sortAlphaUniq(arrAll);
+	var arrAll = sortAscUniq(arrAll);
 //	alert(arrAll);
 	return arrAll;
 }
@@ -216,7 +215,7 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 		sendRequest(tempWorksPage, function (responseNext) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
 			//getNextPageLinks(ao3LinkToAuthorWorks, responseNext); //prints directly to div.innerHTML
 			arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
-			arrAll = sortAlphaUniq(arrAll);
+			arrAll = sortAscUniq(arrAll);
 			printNewArrayToDivInnerHTML(printWorks, arrAll);
 			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
 		});
