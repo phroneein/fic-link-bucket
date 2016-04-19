@@ -85,7 +85,7 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 }
 
 //Clears printed list of links
-function clearOutput(){
+function clearOutput(){ //used after "Get links!" button is clicked
 	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
 	var printWorks = document.getElementById('printWorks'); //VISIBLE	//prints storyIDs
 	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
@@ -114,9 +114,9 @@ function getNextPageLinks(ao3LinkToAuthorWorks, response) {
 	var printWorks = document.getElementById('printWorks'); //VISIBLE	
 	var printURLs = document.getElementById('printURLs');		//VISIBLE
 	
-  var arr = parseHTMLforLinks(response); //gets links from HTML
-	var storyIDsAll = getStoryIDs(arr);		 //gets story IDs from element array
-	var storyIDs = sortAlphaUniq(storyIDsAll); //alphabetical, unique values
+  var arr = parseHTMLforLinks(response);    //gets links from HTML
+	var storyIDsAll = getStoryIDs(arr);		    //gets story IDs from element array
+	var storyIDs = sortAlphaUniq(storyIDsAll);//alphabetical, unique values
 	
 	printArrayToDivInnerHTML(printWorks, storyIDs);  								//print storyIDs
 	printAuthorFicLinks(printURLs, storyIDs, ao3LinkToAuthorWorks); //print storyURLs
@@ -128,6 +128,8 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
 	var printWorks = document.getElementById('printWorks'); //VISIBLE	
 	var printURLs = document.getElementById('printURLs');		//VISIBLE
+	var printWorksTitle = document.getElementById('printWorksTitle'); //VISIBLE	
+	var printURLsTitle = document.getElementById('printURLsTitle');		//VISIBLE
 	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
 	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list
 	printArr.style.display = 'none'; 				 // HIDES 'printArr' div
@@ -144,8 +146,8 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	}
 	
 	//print story div headers
-	printWorks.innerHTML += "Story IDs: <br>".bold();
-	printURLs.innerHTML += "Story URLs: <br>".bold();
+	printWorksTitle.innerHTML = "Story IDs: <br>".bold();
+	printURLsTitle.innerHTML = "Story URLs: <br>".bold();
 
 	//print formatted list of links
 	printLL.innerHTML = printLL.innerHTML.replace(/http:\/\//g,'');
@@ -189,7 +191,7 @@ function getUserName() {
 		printList(ao3LinkToAuthorWorks, response, authorName); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
 	});
 }
-// hard-coded test function
+// hard-coded test function //for DEBUGGING
 function getUserNameHARD() {
   clearOutput();
 	var authorName = 'deritine';
