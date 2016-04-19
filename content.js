@@ -102,8 +102,24 @@ function printArrayToDivInnerHTML(divName, array) {
 	}
 }
 
+//Replace formatted array to Div InnerHTML
+function printNewArrayToDivInnerHTML(divName, array) {
+  divName.innerHTML = "";
+  for (i=0, j=array.length; i<j; i++){
+	  divName.innerHTML += array[i] + "<br>";
+	}
+}
+
 //Prints links of works from author
 function printAuthorFicLinks(divName, storyIDs, linkBeginning) {
+	for (i=0, j=storyIDs.length; i<j; i++){
+		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "<br>";
+	}
+}
+
+//Replace links of works from author
+function printNewAuthorFicLinks(divName, storyIDs, linkBeginning) {
+  divName.innerHTML = "";
 	for (i=0, j=storyIDs.length; i<j; i++){
 		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "<br>";
 	}
@@ -120,6 +136,35 @@ function getNextPageLinks(ao3LinkToAuthorWorks, response) {
 	
 	printArrayToDivInnerHTML(printWorks, storyIDs);  								//print storyIDs
 	printAuthorFicLinks(printURLs, storyIDs, ao3LinkToAuthorWorks); //print storyURLs
+}
+
+//Replace links from next page of author works
+function getNewNextPageLinks(ao3LinkToAuthorWorks, response) {
+	var printWorks = document.getElementById('printWorks'); //VISIBLE	
+	var printURLs = document.getElementById('printURLs');		//VISIBLE
+	
+	var arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+	arrAll = sortAlphaUniq(arrAll);
+	
+	printNewArrayToDivInnerHTML(printWorks, storyIDs);  								//print storyIDs
+	printNewAuthorFicLinks(printURLs, storyIDs, ao3LinkToAuthorWorks); //print storyURLs
+}
+
+//adds all links to array
+function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
+  var arr = parseHTMLforLinks(responseNext);//gets links from HTML
+	var storyIDsNext = getStoryIDs(arr);		  //gets story IDs from element array
+	var storyIDs = sortAlphaUniq(storyIDsNext);//alphabetical, unique storyID values
+  var arrAll = arrAll.concat(storyIDs);			//add new storyIDs to arrAll (all links array)
+  //alert(arrAll);	
+	return arrAll;	//return updated array
+}
+
+//test function
+function printArrAll(arrAll) {
+	var arrAll = sortAlphaUniq(arrAll);
+//	alert(arrAll);
+	return arrAll;
 }
 
 //Prints list of storyIDs and storyURLs
@@ -161,13 +206,21 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
 	var ao3Works = 'http://archiveofourown.org/users/' + authorName + '/pseuds/'+ authorName +'/works?page=';
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
-	for (var i=1; i<numWorksPages+1; i++) {
+	var arrAll = [];
+	for (var i=1, j=numWorksPages+1; i<j; i++) {
+	 	if (i===j){
+		  printArrayToDivInnerHTML(printWorks, arrAll);
+			printWorks.innerHTML += "TEST ================== <br>";
+		}
 	  var tempWorksPage = ao3Works.concat(i.toString());
 		sendRequest(tempWorksPage, function (responseNext) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
-			getNextPageLinks(ao3LinkToAuthorWorks, responseNext);
+			//getNextPageLinks(ao3LinkToAuthorWorks, responseNext); //prints directly to div.innerHTML
+			arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+			arrAll = sortAlphaUniq(arrAll);
+			printNewArrayToDivInnerHTML(printWorks, arrAll);
+			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
 		});
-	}	
-//	printURLs.innerHTML += "All links found.".bold(); //does NOT print last
+	}
 }
 
 // the function which handles the input field logic
