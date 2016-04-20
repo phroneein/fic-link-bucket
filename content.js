@@ -13,13 +13,26 @@ function sendRequest(url, callback) {
 //get number of author works pages
 function getNumWorksPages(arr) {
 	var numWorksPages = 1;
+	var arrLinks = [];
 	for (var i=0, len=arr.length; i<len; i++) {
-  	var tempStr = String(arr[i]);
-		if (tempStr.includes("works?page="))//format of URLs -- ex:"works?page=6"
+  	var tempLink = String(arr[i]);
+		if (tempLink.includes("works?page=")) {//format of URLs -- ex:"works?page=6"
 			numWorksPages++;									//if link includes "works?page=" then author has another page of works links
+			arrLinks.push(tempLink);
+		}
 	}
+	var largestNum = 0;
+/*	for (i=0, len=arrLinks.length; i<len; i++) {
+	  tempLink = String(arrLinks[i]);
+		var tempPageNum = location.pathname.match(/\/works?page=(.*)/)[1];
+		alert(tempPageNum);
+		if (tempPageNum > 0) {
+		  largestNum = tempPageNum;
+		}
+	}*/
 //	alert("Number of Works Pages = " + numWorksPages);
 	return numWorksPages;
+//	return largestNum;
 }
 
 //sorts arrays in alphabetical order and removes duplicates
@@ -98,25 +111,11 @@ function clearOutput(){ //used after "Get links!" button is clicked
 	printURLs.style.visibility = "visible";
 }
 
-//Adds a formatted array to Div InnerHTML
-function printArrayToDivInnerHTML(divName, array) {
-  for (i=0, j=array.length; i<j; i++){
-	  divName.innerHTML += array[i] + "<br>";
-	}
-}
-
 //Replace formatted array to Div InnerHTML
 function printNewArrayToDivInnerHTML(divName, array) {
   divName.innerHTML = "";
   for (i=0, j=array.length; i<j; i++){
 	  divName.innerHTML += array[i] + "\n";
-	}
-}
-
-//Prints links of works from author
-function printAuthorFicLinks(divName, storyIDs, linkBeginning) {
-	for (i=0, j=storyIDs.length; i<j; i++){
-		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "<br>";
 	}
 }
 
@@ -126,19 +125,6 @@ function printNewAuthorFicLinks(divName, storyIDs, linkBeginning) {
 	for (i=0, j=storyIDs.length; i<j; i++){
 		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "\n";
 	}
-}
-
-//gets links from next page of author works
-function getNextPageLinks(ao3LinkToAuthorWorks, response) {
-	var printWorks = document.getElementById('printWorks'); //VISIBLE	
-	var printURLs = document.getElementById('printURLs');		//VISIBLE
-	
-  var arr = parseHTMLforLinks(response);    //gets links from HTML
-	var storyIDsAll = getStoryIDs(arr);		    //gets story IDs from element array
-	var storyIDs = sortAscUniq(storyIDsAll);//alphabetical, unique values
-	
-	printArrayToDivInnerHTML(printWorks, storyIDs);  								//print storyIDs
-	printAuthorFicLinks(printURLs, storyIDs, ao3LinkToAuthorWorks); //print storyURLs
 }
 
 //Replace links from next page of author works
@@ -185,7 +171,7 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	printWorksTitle.innerHTML = "Story IDs: ".bold();
 	printURLsTitle.innerHTML = "Story URLs: ".bold();
 
-	var numWorksPages = getNumWorksPages(arr);//get number of pages of author works
+	var numWorksPages = getNumWorksPages(arr);//get number of pages of author works //only finds up to 11 pages
 	var authorName = authorName; 
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
 	var ao3Works = 'http://archiveofourown.org/users/' + authorName + '/pseuds/'+ authorName +'/works?page=';
@@ -194,12 +180,13 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	for (var i=1, j=numWorksPages+1; i<j; i++) {
 	  var tempWorksPage = ao3Works.concat(i.toString());
 		sendRequest(tempWorksPage, function (responseNext) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
-			//getNextPageLinks(ao3LinkToAuthorWorks, responseNext); //prints directly to div.innerHTML //old code
 			arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
 			arrAll = sortAscUniq(arrAll);
 			printNewArrayToDivInnerHTML(printWorks, arrAll);
 			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
 			printNSF.innerHTML ="Stories found: ".bold() + arrAll.length;
+			alert(numWorksPages);
+//			alert(arrAll);
 		});
 	}
 }
