@@ -109,7 +109,7 @@ function printArrayToDivInnerHTML(divName, array) {
 function printNewArrayToDivInnerHTML(divName, array) {
   divName.innerHTML = "";
   for (i=0, j=array.length; i<j; i++){
-	  divName.innerHTML += array[i] + "<br>";
+	  divName.innerHTML += array[i] + "\n";
 	}
 }
 
@@ -124,7 +124,7 @@ function printAuthorFicLinks(divName, storyIDs, linkBeginning) {
 function printNewAuthorFicLinks(divName, storyIDs, linkBeginning) {
   divName.innerHTML = "";
 	for (i=0, j=storyIDs.length; i<j; i++){
-		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "<br>";
+		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "\n";
 	}
 }
 
