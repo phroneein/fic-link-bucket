@@ -12,27 +12,15 @@ function sendRequest(url, callback) {
 
 //get number of author works pages
 function getNumWorksPages(arr) {
-	var numWorksPages = 1;
-	var arrLinks = [];
+	var largestNum = 1;
 	for (var i=0, len=arr.length; i<len; i++) {
   	var tempLink = String(arr[i]);
-		if (tempLink.includes("works?page=")) {//format of URLs -- ex:"works?page=6"
-			numWorksPages++;									//if link includes "works?page=" then author has another page of works links
-			arrLinks.push(tempLink);
+		var numPage = parseInt(tempLink.split("works?page=")[1], 10); //parse for page number in link
+		if (numPage > largestNum) { //find largest page number
+		  largestNum = numPage;     //then update largestNum with largest found
 		}
 	}
-	var largestNum = 0;
-/*	for (i=0, len=arrLinks.length; i<len; i++) {
-	  tempLink = String(arrLinks[i]);
-		var tempPageNum = location.pathname.match(/\/works?page=(.*)/)[1];
-		alert(tempPageNum);
-		if (tempPageNum > 0) {
-		  largestNum = tempPageNum;
-		}
-	}*/
-//	alert("Number of Works Pages = " + numWorksPages);
-	return numWorksPages;
-//	return largestNum;
+	return largestNum;
 }
 
 //sorts arrays in alphabetical order and removes duplicates
@@ -184,7 +172,7 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 			arrAll = sortAscUniq(arrAll);
 			printNewArrayToDivInnerHTML(printWorks, arrAll);
 			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
-			printNSF.innerHTML ="Stories found: ".bold() + arrAll.length;
+			printNSF.innerHTML = "Stories found: ".bold() + arrAll.length;
 			alert(numWorksPages);
 //			alert(arrAll);
 		});
@@ -215,7 +203,8 @@ function getUserName() {
 // hard-coded test function //for DEBUGGING
 function getUserNameHARD() {
   clearOutput();
-	var authorName = 'deritine';
+//	var authorName = 'deritine';
+	var authorName = 'Lomonaaeren';
 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
