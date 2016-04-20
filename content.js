@@ -133,14 +133,12 @@ function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
 	var storyIDsNext = getStoryIDs(arr);		  //gets story IDs from element array
 	var storyIDs = sortAscUniq(storyIDsNext);//alphabetical, unique storyID values
   var arrAll = arrAll.concat(storyIDs);			//add new storyIDs to arrAll (all links array)
-  //alert(arrAll);	
 	return arrAll;	//return updated array
 }
 
 //test function
 function printArrAll(arrAll) {
 	var arrAll = sortAscUniq(arrAll);
-//	alert(arrAll);
 	return arrAll;
 }
 
@@ -148,7 +146,7 @@ function printArrAll(arrAll) {
 function printList(ao3LinkToAuthorWorks, response, authorName) {
 	var arr = [], storyIDs = [], storyIDsAll = [];          //initialize arrays
 	var printNSF = document.getElementById('printNumStoriesFound');		//VISIBLE
-	var printWorks = document.getElementById('printWorks'); 					//VISIBLE	
+	var printWorks = document.getElementById('printWorks'); 					//make VISIBLE	
 	var printURLs = document.getElementById('printURLs');							//make VISIBLE
 	var printWorksTitle = document.getElementById('printWorksTitle'); //VISIBLE	
 	var printURLsTitle = document.getElementById('printURLsTitle');		//VISIBLE
@@ -161,8 +159,8 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 
 	var numWorksPages = getNumWorksPages(arr);//get number of pages of author works //only finds up to 11 pages
 	var authorName = authorName; 
-	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
-	var ao3Works = 'http://archiveofourown.org/users/' + authorName + '/pseuds/'+ authorName +'/works?page=';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works';
+	var ao3Works = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var arrAll = [];
 	for (var i=1, j=numWorksPages+1; i<j; i++) {
@@ -185,7 +183,7 @@ function getUserName() {
 	var authorName = document.getElementById('nameField').value; //gets user inputted author
 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
-	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
 	var result = document.getElementById('result');
 	
 	if (authorName.length < 3) {
@@ -207,7 +205,7 @@ function getUserNameHARD() {
 	var authorName = 'Lomonaaeren';
 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
-	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/pseuds/' + authorName + '/works';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
 	var result = document.getElementById('result');
 	result.innerHTML = 'Author: '.bold() + authorName;
 	
