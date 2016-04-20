@@ -171,8 +171,6 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 			printNewArrayToDivInnerHTML(printWorks, arrAll);
 			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
 			printNSF.innerHTML = "Stories found: ".bold() + arrAll.length;
-			alert(numWorksPages);
-//			alert(arrAll);
 		});
 	}
 }
@@ -181,16 +179,22 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 function getUserName() {
   clearOutput(); //clears output on subsequent calls
 	var authorName = document.getElementById('nameField').value; //gets user inputted author
-	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
-	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
-	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
+	var userInput = String(authorName);
 	var result = document.getElementById('result');
-	
+
 	if (authorName.length < 3) {
-		result.textContent = 'ERROR:  Username must contain at least 3 characters';
+		result.textContent = 'ERROR:  Input must contain at least 3 characters';
+	} else if ( userInput.includes("org/users/") ) {
+	  var authorNameParse = userInput.split("/")[4];
+		authorName = authorNameParse;
+		result.innerHTML = 'Author: '.bold() + authorName;
 	} else {
 		result.innerHTML = 'Author: '.bold() + authorName;
 	}
+
+	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
+	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
+	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
 	
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
 	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
@@ -202,12 +206,19 @@ function getUserName() {
 function getUserNameHARD() {
   clearOutput();
 //	var authorName = 'deritine';
-	var authorName = 'Lomonaaeren';
+	var authorName = 'littleblackdog';
+	
 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
 	var result = document.getElementById('result');
 	result.innerHTML = 'Author: '.bold() + authorName;
+	
+	if (authorName.length < 3) {
+		result.textContent = 'ERROR:  Input must contain at least 3 characters';
+	} else {
+		result.innerHTML = 'Author: '.bold() + authorName;
+	}
 	
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
 	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
