@@ -91,7 +91,11 @@ function clearOutput(){ //used after "Get links!" button is clicked
 	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
 	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
 	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list   
-	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML = printURLs.innerHTML = printSortedLinks.innerHTML = '';		//CLEARS ALL OUTPUT
+	var printNSF = document.getElementById('printNumStoriesFound');		//VISIBLE
+	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML = '';	//CLEARS ALL OUTPUT
+	printURLs.innerHTML = printSortedLinks.innerHTML = '';							//CLEARS ALL OUTPUT
+  printWorks.style.visibility = "visible";
+	printURLs.style.visibility = "visible";
 }
 
 //Adds a formatted array to Div InnerHTML
@@ -169,36 +173,17 @@ function printArrAll(arrAll) {
 //Prints list of storyIDs and storyURLs
 function printList(ao3LinkToAuthorWorks, response, authorName) {
 	var arr = [], storyIDs = [], storyIDsAll = [];          //initialize arrays
-	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
-	var printWorks = document.getElementById('printWorks'); //VISIBLE	
-	var printURLs = document.getElementById('printURLs');		//VISIBLE
+	var printNSF = document.getElementById('printNumStoriesFound');		//VISIBLE
+	var printWorks = document.getElementById('printWorks'); 					//VISIBLE	
+	var printURLs = document.getElementById('printURLs');							//make VISIBLE
 	var printWorksTitle = document.getElementById('printWorksTitle'); //VISIBLE	
 	var printURLsTitle = document.getElementById('printURLsTitle');		//VISIBLE
-	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
-	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list
-	printArr.style.display = 'none'; 				 // HIDES 'printArr' div
-	printLL.style.display = 'none'; 				 // HIDES 'printLinkList' div	
-	printSortedLinks.style.display = 'none'; // HIDES 'TestDiv' div
 	
 	arr = parseHTMLforLinks(response);  //gets links from HTML
-
-	//print arr[] values in printLL, printArr
-	printArr.innerHTML = "Printing arr[] values: <br>";
-	for (var i=1, j=arr.length+1; i<j; i++) { //debug replace j w/ 10
-		printArr.innerHTML += i + '. ' + arr[i] + '<br>';
-		printLL.innerHTML += i + '. ' + arr[i] + '<br>';
-	}
 	
 	//print story div headers
-	printWorksTitle.innerHTML = "Story IDs: <br>".bold();
-	printURLsTitle.innerHTML = "Story URLs: <br>".bold();
-
-	//print formatted list of links
-	printLL.innerHTML = printLL.innerHTML.replace(/http:\/\//g,'');
-	printSortedLinks.innerHTML = '<br>Unique, sorted list of links: <br>' 
-	                       + printLL.innerHTML.replace(/chrome-extension:\/\/mhnpeajhbneafhmljmanlnonhdlgpfja/g,
-												 'archiveofourown.org/users/deritine');
-//	printSortedLinks.innerHTML = printSortedLinks.innerHTML.sort().replace(/http:\/\//g, ''); //TO DO: Find out why broken
+	printWorksTitle.innerHTML = "Story IDs: ".bold();
+	printURLsTitle.innerHTML = "Story URLs: ".bold();
 
 	var numWorksPages = getNumWorksPages(arr);//get number of pages of author works
 	var authorName = authorName; 
@@ -207,17 +192,14 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var arrAll = [];
 	for (var i=1, j=numWorksPages+1; i<j; i++) {
-	 	if (i===j){
-		  printArrayToDivInnerHTML(printWorks, arrAll);
-			printWorks.innerHTML += "TEST ================== <br>";
-		}
 	  var tempWorksPage = ao3Works.concat(i.toString());
 		sendRequest(tempWorksPage, function (responseNext) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
-			//getNextPageLinks(ao3LinkToAuthorWorks, responseNext); //prints directly to div.innerHTML
+			//getNextPageLinks(ao3LinkToAuthorWorks, responseNext); //prints directly to div.innerHTML //old code
 			arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
 			arrAll = sortAscUniq(arrAll);
 			printNewArrayToDivInnerHTML(printWorks, arrAll);
 			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
+			printNSF.innerHTML ="Stories found: ".bold() + arrAll.length;
 		});
 	}
 }
@@ -273,7 +255,10 @@ copyURLsBtn.addEventListener('click', function () {
   document.execCommand('copy');				// execute 'copy', can't 'cut' in this case
 	clearSelection();										// deselects all text
 }, false);
-
+var printURLs = document.getElementById('printURLs');		//later VISIBLE //prints storyURLs
+printURLs.style.visibility = "hidden";
+var printIDs = document.getElementById('printWorks');		//later VISIBLE //prints storyIDs
+printIDs.style.visibility = "hidden";
 
 
 
