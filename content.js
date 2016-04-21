@@ -205,7 +205,6 @@ function getUserName() {
 		authorName = authorNameParse;
 		passLinksToProcess(authorName);
 	} else if (userInput.includes("org/works/")) {
-		userInput = "http://archiveofourown.org/works/1292134";
     sendRequest(userInput, function (response){
 			authorName = parseHTMLforAuthor(response);
 			passLinksToProcess(authorName);
@@ -245,7 +244,6 @@ function getUserNameHARD() {
 		authorName = authorNameParse;
 		passLinksToProcess(authorName);
 	} else if (userInput.includes("org/works/")) {
-		userInput = "http://archiveofourown.org/works/1292134";
     sendRequest(userInput, function (response){
 			authorName = parseHTMLforAuthor(response);
 			passLinksToProcess(authorName);
