@@ -7,12 +7,7 @@ function sendRequest(url, callback) {
 		}
 	};
 	xhr.open("GET", url, true);
-//	xhr.open("GET", url, false);
 	xhr.send();
-}
-
-function getDataFromURL(data) {
-  alert(data);
 }
 
 //get number of author works pages
@@ -74,15 +69,13 @@ function parseHTMLforAuthor(response) {
 	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
 	el.innerHTML = response;									// add html to DOM
 
-	var links = el.getElementsByTagName('a'),
+	var links = el.getElementsByTagName('a'), //find all links
 		filtered = [],
 		i = links.length;
 	while ( i-- ) {
-		links[i].rel === "author" && filtered.push( links[i] );
+		links[i].rel === "author" && filtered.push( links[i] );//filter links with rel="author"
 	}
-//	alert( filtered[0].href ); //first link found with rel="author"
-	var authorName = filtered[0].href.split("/")[4]; //get only authorName
-//	alert(authorName);
+	var authorName = filtered[0].href.split("/")[4]; //get only authorName, from first link found with rel="author"
 	return authorName;
 }
 
@@ -202,60 +195,64 @@ function getUserName() {
   clearOutput(); //clears output on subsequent calls
 	var authorName = document.getElementById('nameField').value; //gets user inputted author
 	var userInput = String(authorName);
-	var result = document.getElementById('result');
-  var data;
 	
-//  alert(userInput);
+	//check user input
 	if (authorName.length < 3) {
 		result.textContent = 'ERROR:  Input must contain at least 3 characters';
+		printWorks.style.visibility = printURLs.style.visibility = "hidden";
 	} else if ( userInput.includes("org/users/") ) {
 	  var authorNameParse = userInput.split("/")[4];
 		authorName = authorNameParse;
-		result.innerHTML = 'Author: '.bold() + authorName;
+		passLinksToProcess(authorName);
 	} else if (userInput.includes("org/works/")) {
 		userInput = "http://archiveofourown.org/works/1292134";
-    authorName = sendRequest(userInput, function (response){
+    sendRequest(userInput, function (response){
 			authorName = parseHTMLforAuthor(response);
-			var result = document.getElementById('result');
-			result.innerHTML = 'Author: '.bold() + authorName;
-			return authorName;
+			passLinksToProcess(authorName);
 	  });
 	} else {
-		result.innerHTML = 'Author: '.bold() + authorName;
+		passLinksToProcess(authorName);
 	}
-	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
+}
+
+//Passes links using authorName
+function passLinksToProcess(authorName) {
+ 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
-	
+
 	var Printao3AuthorURL = document.getElementById('printAuthorURL');
 	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
+	var result = document.getElementById('result');
+	result.innerHTML = 'Author: '.bold() + authorName;
 	sendRequest(ao3LinkToAuthorWorks2, function (response) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
 		printList(ao3LinkToAuthorWorks, response, authorName); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
-	});
+	});	
 }
+
 // hard-coded test function //for DEBUGGING
 function getUserNameHARD() {
   clearOutput();
-//	var authorName = 'deritine';
 	var authorName = 'littleblackdog';
+	var userInput = String(authorName);
 	
-	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
-	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
-	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
-	var result = document.getElementById('result');
-	result.innerHTML = 'Author: '.bold() + authorName;
-	
+	//check user input
 	if (authorName.length < 3) {
 		result.textContent = 'ERROR:  Input must contain at least 3 characters';
+		printWorks.style.visibility = printURLs.style.visibility = "hidden";
+	} else if ( userInput.includes("org/users/") ) {
+	  var authorNameParse = userInput.split("/")[4];
+		authorName = authorNameParse;
+		passLinksToProcess(authorName);
+	} else if (userInput.includes("org/works/")) {
+		userInput = "http://archiveofourown.org/works/1292134";
+    sendRequest(userInput, function (response){
+			authorName = parseHTMLforAuthor(response);
+			passLinksToProcess(authorName);
+	  });
 	} else {
-		result.innerHTML = 'Author: '.bold() + authorName;
+		passLinksToProcess(authorName);
 	}
-	
-	var Printao3AuthorURL = document.getElementById('printAuthorURL');
-	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
-	sendRequest(ao3LinkToAuthorWorks2, function (response) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
-		printList(ao3LinkToAuthorWorks, response, authorName); //Parse HTML for links, and print in list			 //ao3LinkToAuthorWorks
-	});
 }
 
 var subButton = document.getElementById('subButton'); 
@@ -269,7 +266,7 @@ copyURLsBtn.addEventListener('click', function () {
   range.selectNode(urlField);					// set the Node to select the "range"
   window.getSelection().addRange(range);// add the Range to the set of window selections
   document.execCommand('copy');				// execute 'copy', can't 'cut' in this case
-	clearSelection();										// deselects all text
+	clearSelection();										// DESELECTS ALL TEXT
 }, false);
 var printURLs = document.getElementById('printURLs');		//later VISIBLE //prints storyURLs
 printURLs.style.visibility = "hidden";
