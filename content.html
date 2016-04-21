@@ -10,6 +10,8 @@
 <body>
 
   <br>Currently:  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Gets ALL links from an author's works page. <br><br>
+	test fic link = <br> http://archiveofourown.org/works/1292134
+	<br><br>
   
   Input requested data into fields below:<br><br>
  
@@ -18,10 +20,13 @@
 		<form id='nameForm'>
 		<div class='form-uname'>
 			<label id='nameLabel' for='nameField'>Input author username:</label>
-			<input id='nameField' type='text' onkeypress="return runScript(event)">AuthorName, AuthorURL, URL, ...</input>
+			<input id='nameField' type='text' size="50" onkeypress="return runScript(event)"
+				onkeydown = "if (event.keyCode == 13) document.getElementById('subButton').click()" >
+					AuthorName, AuthorURL, URL, ...
+			</input>
 		</div>
 		<div class='form-sub'>
-			<button id='subButton' type='button'>Get your links!</button>
+			<button id='subButton' type='button' onclick="getUserName">Get your links!</button>
 			<button id='testButton' type='button'>(littleblackdog)</button>
 			<button id='copyURLsButton' type='button'>Copy URLs</button>
 		</div>

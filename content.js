@@ -2,12 +2,17 @@
 function sendRequest(url, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function () {
-		if (xhr.readyState == 4) {
+		if (xhr.readyState == 4 && xhr.status == 200) {
 			callback(xhr.responseText);
 		}
 	};
 	xhr.open("GET", url, true);
+//	xhr.open("GET", url, false);
 	xhr.send();
+}
+
+function getDataFromURL(data) {
+  alert(data);
 }
 
 //get number of author works pages
@@ -62,6 +67,23 @@ function parseHTMLforLinks(response) {
 	var arr = Array.prototype.slice.call(nl); // convert NodeList to array
   var arrNew = sortAscUniq(arr);					// sorts alphabetically, removes duplicates
 	return arrNew;														// RETURN converted array 	
+}
+
+//parses work webpage HTML for author
+function parseHTMLforAuthor(response) {
+	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
+	el.innerHTML = response;									// add html to DOM
+
+	var links = el.getElementsByTagName('a'),
+		filtered = [],
+		i = links.length;
+	while ( i-- ) {
+		links[i].rel === "author" && filtered.push( links[i] );
+	}
+//	alert( filtered[0].href ); //first link found with rel="author"
+	var authorName = filtered[0].href.split("/")[4]; //get only authorName
+//	alert(authorName);
+	return authorName;
 }
 
 //checks if value is a number
@@ -181,17 +203,26 @@ function getUserName() {
 	var authorName = document.getElementById('nameField').value; //gets user inputted author
 	var userInput = String(authorName);
 	var result = document.getElementById('result');
-
+  var data;
+	
+//  alert(userInput);
 	if (authorName.length < 3) {
 		result.textContent = 'ERROR:  Input must contain at least 3 characters';
 	} else if ( userInput.includes("org/users/") ) {
 	  var authorNameParse = userInput.split("/")[4];
 		authorName = authorNameParse;
 		result.innerHTML = 'Author: '.bold() + authorName;
+	} else if (userInput.includes("org/works/")) {
+		userInput = "http://archiveofourown.org/works/1292134";
+    authorName = sendRequest(userInput, function (response){
+			authorName = parseHTMLforAuthor(response);
+			var result = document.getElementById('result');
+			result.innerHTML = 'Author: '.bold() + authorName;
+			return authorName;
+	  });
 	} else {
 		result.innerHTML = 'Author: '.bold() + authorName;
 	}
-
 	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
