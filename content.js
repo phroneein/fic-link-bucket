@@ -79,6 +79,20 @@ function parseHTMLforAuthor(response) {
 	return authorName;
 }
 
+//parses search webpage for Search query
+function parseHTMLforSearchQuery(response) {
+	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
+	el.innerHTML = response;									// add html to DOM
+	var hdg = el.getElementsByTagName('h4'), //find all heading_4
+		filtered = [],
+		len = hdg.length;
+	for (var i=0; i<len; i++) {
+	  if (hdg[i].className === 'heading') filtered.push( hdg[i] );//filter h4 with class "heading"
+	}
+	var searchQ = filtered[0].innerHTML; //returns first element in filtered array
+	return searchQ;
+}
+
 //checks if value is a number
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -200,13 +214,18 @@ function getUserName() {
 	if (authorName.length < 3) {
 		result.textContent = 'ERROR:  Input must contain at least 3 characters';
 		printWorks.style.visibility = printURLs.style.visibility = "hidden";
+	} else if ( userInput.includes("org/works/search") ) {
+		sendRequest(userInput, function (response) {
+			var searchQ = parseHTMLforSearchQuery(response); //find user search query/filters
+			alert("SEARCHQ = " + searchQ);
+		});
 	} else if ( userInput.includes("org/users/") ) {
 	  var authorNameParse = userInput.split("/")[4];
 		authorName = authorNameParse;
 		passLinksToProcess(authorName);
 	} else if (userInput.includes("org/works/")) {
     sendRequest(userInput, function (response){
-			authorName = parseHTMLforAuthor(response);
+			authorName = parseHTMLforAuthor(response);//find authorName from workURL
 			passLinksToProcess(authorName);
 	  });
 	} else {
