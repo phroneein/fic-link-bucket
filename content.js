@@ -31,7 +31,7 @@ function getNumSearchPages(arr) {
 		var match = parseInt(tempLink.split("Search&page=")[1], 10);
 		if (match >= 50) {
 		  var message = document.getElementById('message');
-			message.innerHTML = 'More than 50 Search pages found, only first 50 pages processed.';
+			message.innerHTML = 'Notice: '.bold() + 'More than 50 Search pages found, only first 50 pages processed.';
 			largestNum = 50;
 			return largestNum;
 		}
@@ -233,25 +233,31 @@ function printSearchList(arr, numSearchPages) {
   var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
   var ao3Search = 'http://archiveofourown.org/works/search?commit=Search&page=';
 	var searchQuery = '&utf8=%E2%9C%93&work_search%5Bbookmarks_count%5D=&work_search%5Bcharacter_names%5D=&work_search%5Bcomments_count%5D=&work_search%5Bcomplete%5D=1&work_search%5Bcreator%5D=&work_search%5Bfandom_names%5D=&work_search%5Bfreeform_names%5D=&work_search%5Bhits%5D=&work_search%5Bkudos_count%5D=&work_search%5Blanguage_id%5D=&work_search%5Bquery%5D=&work_search%5Brating_ids%5D=&work_search%5Brelationship_names%5D=&work_search%5Brevised_at%5D=&work_search%5Bshow_restricted%5D=true&work_search%5Bsingle_chapter%5D=0&work_search%5Bsort_column%5D=&work_search%5Bsort_direction%5D=&work_search%5Btitle%5D=&work_search%5Bword_count%5D=';
-  var tempSearchPage = ao3Search + 1 + searchQuery;
-//  alert(tempSearchPage);
-	var message = document.getElementById('message');
-	message.innerHTML += '<br><br>' + tempSearchPage;
+//	var message = document.getElementById('message');
 	var arrAll = [];
 	var printWorks = document.getElementById('printWorks'); 
 	var printURLs = document.getElementById('printURLs');
 	var printNSF = document.getElementById('printNumStoriesFound');
-	sendRequest(tempSearchPage, function (responseNext) {
-	  arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
-		arrAll = sortAscUniq(arrAll);
-//		alert(arrAll);
-		printNewArrayToDivInnerHTML(printWorks, arrAll);
-		printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
-		printNSF.innerHTML = "Stories found: ".bold() + arrAll.length;		
-		//
-		var message = document.getElementById('message');
-		message.innerHTML += '<br><br>' + arrAll.join('\n\n');
-	});
+	for (var i=1, j=numSearchPages+1; i<j; i++) {
+	  var tempSearchPage = ao3Search + i + searchQuery;
+		if (i<j-1){
+			sendRequest(tempSearchPage, function (responseNext) {
+				arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+				arrAll = sortAscUniq(arrAll);
+				printNSF.innerHTML = "Stories found (so far): ".bold() + arrAll.length;
+				printNewArrayToDivInnerHTML(printWorks, arrAll);
+				printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);		
+			});
+		}else if (i >= j-1) {
+			sendRequest(tempSearchPage, function (responseNext) {
+				arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+				arrAll = sortAscUniq(arrAll);
+				printNSF.innerHTML = "Stories found : ".bold() + arrAll.length + " (all stories found)";
+				printNewArrayToDivInnerHTML(printWorks, arrAll);
+				printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);		
+			});
+		}
+	}
   return tempSearchPage;
 }
 
@@ -272,11 +278,9 @@ function getUserName() {
 			var result = document.getElementById('result');
     	result.innerHTML = 'Search Query: '.bold() + searchQ;
 			var arr = parseHTMLforLinks(response);
-//			result.innerHTML += '<br>' + arr.join('<br><br>');
 			var numSearchPages = getNumSearchPages(arr); //get number of search pages
-//			alert("numSearchPages = " + numSearchPages);
 			var tempURL = printSearchList(arr, numSearchPages);
-			result.innerHTML += '<br>' + tempURL;
+			result.innerHTML += '<br>' + 'Search URL: '.bold() + tempURL;
 		});
 	} else if ( userInput.includes("org/users/") ) {
 	  showTextAreas();
