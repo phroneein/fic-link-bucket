@@ -23,6 +23,25 @@ function getNumWorksPages(arr) {
 	return largestNum;
 }
 
+//get number of Search pages (up to 50)
+function getNumSearchPages(arr) {
+	var largestNum = 1;
+	for (var i=0, len=arr.length; i<len; i++) {
+  	var tempLink = String(arr[i]);
+		var match = parseInt(tempLink.split("Search&page=")[1], 10);
+		if (match >= 50) {
+		  var message = document.getElementById('message');
+			message.innerHTML = 'More than 50 Search pages found, only first 50 pages processed.';
+			largestNum = 50;
+			return largestNum;
+		}
+		if (match > largestNum) {
+		  largestNum = match;
+		}
+	}
+	return largestNum;
+}
+
 //sorts arrays in alphabetical order and removes duplicates
 function sortAscUniq(array) {
 	array = array.sort(function(a, b){return a-b}); //sort numerical/ascending order
@@ -117,19 +136,24 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 //Clears printed list of links
 function clearOutput(){ //used after "Get links!" button is clicked
 	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
-	var printWorks = document.getElementById('printWorks'); //VISIBLE	//prints storyIDs
-	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
 	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
 	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list   
 	var printNSF = document.getElementById('printNumStoriesFound');		//VISIBLE
 	printArr.innerHTML = printWorks.innerHTML = printLL.innerHTML = '';	//CLEARS ALL OUTPUT
 	printURLs.innerHTML = printSortedLinks.innerHTML = '';							//CLEARS ALL OUTPUT
+}
+
+//Shows TextAreas for IDs and URLs
+function showTextAreas() {
+	var printWorks = document.getElementById('printWorks'); //VISIBLE	//prints storyIDs
+	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
   printWorks.style.visibility = "visible";
 	printURLs.style.visibility = "visible";
 }
 
 //Replace formatted array to Div InnerHTML
 function printNewArrayToDivInnerHTML(divName, array) {
+  showTextAreas();
   divName.innerHTML = "";
   for (i=0, j=array.length; i<j; i++){
 	  divName.innerHTML += array[i] + "\n";
@@ -204,6 +228,33 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	}
 }
 
+//print links from searchURL
+function printSearchList(arr, numSearchPages) {
+  var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
+  var ao3Search = 'http://archiveofourown.org/works/search?commit=Search&page=';
+	var searchQuery = '&utf8=%E2%9C%93&work_search%5Bbookmarks_count%5D=&work_search%5Bcharacter_names%5D=&work_search%5Bcomments_count%5D=&work_search%5Bcomplete%5D=1&work_search%5Bcreator%5D=&work_search%5Bfandom_names%5D=&work_search%5Bfreeform_names%5D=&work_search%5Bhits%5D=&work_search%5Bkudos_count%5D=&work_search%5Blanguage_id%5D=&work_search%5Bquery%5D=&work_search%5Brating_ids%5D=&work_search%5Brelationship_names%5D=&work_search%5Brevised_at%5D=&work_search%5Bshow_restricted%5D=true&work_search%5Bsingle_chapter%5D=0&work_search%5Bsort_column%5D=&work_search%5Bsort_direction%5D=&work_search%5Btitle%5D=&work_search%5Bword_count%5D=';
+  var tempSearchPage = ao3Search + 1 + searchQuery;
+//  alert(tempSearchPage);
+	var message = document.getElementById('message');
+	message.innerHTML += '<br><br>' + tempSearchPage;
+	var arrAll = [];
+	var printWorks = document.getElementById('printWorks'); 
+	var printURLs = document.getElementById('printURLs');
+	var printNSF = document.getElementById('printNumStoriesFound');
+	sendRequest(tempSearchPage, function (responseNext) {
+	  arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+		arrAll = sortAscUniq(arrAll);
+//		alert(arrAll);
+		printNewArrayToDivInnerHTML(printWorks, arrAll);
+		printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
+		printNSF.innerHTML = "Stories found: ".bold() + arrAll.length;		
+		//
+		var message = document.getElementById('message');
+		message.innerHTML += '<br><br>' + arrAll.join('\n\n');
+	});
+  return tempSearchPage;
+}
+
 // the function which handles the input field logic
 function getUserName() {
   clearOutput(); //clears output on subsequent calls
@@ -212,23 +263,34 @@ function getUserName() {
 	
 	//check user input
 	if (authorName.length < 3) {
+	  printWorks.style.visibility = printURLs.style.visibility = "hidden";
 		result.textContent = 'ERROR:  Input must contain at least 3 characters';
-		printWorks.style.visibility = printURLs.style.visibility = "hidden";
 	} else if ( userInput.includes("org/works/search") ) {
+	  printWorks.style.visibility = printURLs.style.visibility = "hidden";
 		sendRequest(userInput, function (response) {
 			var searchQ = parseHTMLforSearchQuery(response); //find user search query/filters
-			alert("SEARCHQ = " + searchQ);
+			var result = document.getElementById('result');
+    	result.innerHTML = 'Search Query: '.bold() + searchQ;
+			var arr = parseHTMLforLinks(response);
+//			result.innerHTML += '<br>' + arr.join('<br><br>');
+			var numSearchPages = getNumSearchPages(arr); //get number of search pages
+//			alert("numSearchPages = " + numSearchPages);
+			var tempURL = printSearchList(arr, numSearchPages);
+			result.innerHTML += '<br>' + tempURL;
 		});
 	} else if ( userInput.includes("org/users/") ) {
+	  showTextAreas();
 	  var authorNameParse = userInput.split("/")[4];
 		authorName = authorNameParse;
 		passLinksToProcess(authorName);
 	} else if (userInput.includes("org/works/")) {
+	  showTextAreas();
     sendRequest(userInput, function (response){
 			authorName = parseHTMLforAuthor(response);//find authorName from workURL
 			passLinksToProcess(authorName);
 	  });
 	} else {
+	  showTextAreas();
 		passLinksToProcess(authorName);
 	}
 }
