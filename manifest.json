@@ -1,7 +1,7 @@
 {
   "name": "ao3 Link Bucket",
   "description": "Get all links from ao3",
-  "version": "1.0",
+  "version": "0.0.0",
   "manifest_version": 2,
   "permissions": ["tabs", "*://*/*"],
   "background": {
