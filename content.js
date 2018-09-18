@@ -355,10 +355,3 @@ var printURLs = document.getElementById('printURLs');		//later VISIBLE //prints 
 printURLs.style.visibility = "hidden";
 var printIDs = document.getElementById('printWorks');		//later VISIBLE //prints storyIDs
 printIDs.style.visibility = "hidden";
-
-
-
-
-
-
-
