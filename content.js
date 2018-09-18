@@ -145,10 +145,12 @@ function clearOutput(){ //used after "Get links!" button is clicked
 
 //Shows TextAreas for IDs and URLs
 function showTextAreas() {
-	var printWorks = document.getElementById('printWorks'); //VISIBLE	//prints storyIDs
+	var printWorks = document.getElementById('printWorks');   //VISIBLE  //prints storyIDs
 	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
-  printWorks.style.visibility = "visible";
+	var ficOutputArea = document.getElementById('fic-output');
+    printWorks.style.visibility = "visible";
 	printURLs.style.visibility = "visible";
+	ficOutputArea.style.visibility = "visible";
 }
 
 //Replace formatted array to Div InnerHTML
