@@ -345,13 +345,14 @@ testButton.addEventListener('click', getUserNameHARD, false);
 var copyURLsBtn = document.querySelector('#copyURLsButton');
 copyURLsBtn.addEventListener('click', function () {
   var urlField = document.querySelector('#printURLs');
-  var range = document.createRange(); // create a Range object
-  range.selectNode(urlField);					// set the Node to select the "range"
-  window.getSelection().addRange(range);// add the Range to the set of window selections
-  document.execCommand('copy');				// execute 'copy', can't 'cut' in this case
+  var range = document.createRange();           // create a Range object
+  range.selectNode(urlField);					 // set the Node to select the "range"
+  window.getSelection().addRange(range);        // add the Range to the set of window selections
+  document.execCommand('copy');				     // execute 'copy', can't 'cut' in this case
 	clearSelection();										// DESELECTS ALL TEXT
 }, false);
 var printURLs = document.getElementById('printURLs');		//later VISIBLE //prints storyURLs
 printURLs.style.visibility = "hidden";
 var printIDs = document.getElementById('printWorks');		//later VISIBLE //prints storyIDs
 printIDs.style.visibility = "hidden";
+var ficOutputArea = document.getElementById('fic-output').style.visibility = "hidden";
