@@ -16,8 +16,8 @@ function getNumWorksPages(arr) {
 	for (var i=0, len=arr.length; i<len; i++) {
   	var tempLink = String(arr[i]);
 		var numPage = parseInt(tempLink.split("works?page=")[1], 10); //parse for page number in link
-		if (numPage > largestNum) { //find largest page number
-		  largestNum = numPage;     //then update largestNum with largest found
+		if (numPage > largestNum) {   //find largest page number
+		    largestNum = numPage;     //then update largestNum with largest found
 		}
 	}
 	return largestNum;
@@ -30,13 +30,13 @@ function getNumSearchPages(arr) {
   	var tempLink = String(arr[i]);
 		var match = parseInt(tempLink.split("Search&page=")[1], 10);
 		if (match >= 50) {
-		  var message = document.getElementById('message');
-			message.innerHTML = 'Notice: '.bold() + 'More than 50 Search pages found, only first 50 pages processed.';
-			largestNum = 50;
-			return largestNum;
+            var message = document.getElementById('message');
+            message.innerHTML = 'Notice: '.bold() + 'More than 50 Search pages found, only first 50 pages processed.';
+            largestNum = 50;
+            return largestNum;
 		}
 		if (match > largestNum) {
-		  largestNum = match;
+		    largestNum = match;
 		}
 	}
 	return largestNum;
@@ -55,13 +55,13 @@ function uniq_fast(a) {
 	var len = a.length;
 	var j = 0;
 	for(var i = 0; i < len; i++) {
-	  var item = a[i];
-	  if(seen[item] !== 1) {
-		  seen[item] = 1;
-		  out[j++] = item;
-	  }
+        var item = a[i];
+        if(seen[item] !== 1) {
+            seen[item] = 1;
+            out[j++] = item;
+        }
 	}
-  return out;
+    return out;
 }
 
 //Deselects all text
@@ -79,7 +79,7 @@ function parseHTMLforLinks(response) {
 	el.innerHTML = response;									// add html to DOM
 	var nl = el.getElementsByTagName('a');    // Live NodeList of anchor elements
 	var arr = Array.prototype.slice.call(nl); // convert NodeList to array
-  var arrNew = sortAscUniq(arr);					// sorts alphabetically, removes duplicates
+    var arrNew = sortAscUniq(arr);					// sorts alphabetically, removes duplicates
 	return arrNew;														// RETURN converted array 	
 }
 
@@ -106,7 +106,7 @@ function parseHTMLforSearchQuery(response) {
 		filtered = [],
 		len = hdg.length;
 	for (var i=0; i<len; i++) {
-	  if (hdg[i].className === 'heading') filtered.push( hdg[i] );//filter h4 with class "heading"
+	    if (hdg[i].className === 'heading') filtered.push( hdg[i] );//filter h4 with class "heading"
 	}
 	var searchQ = filtered[0].innerHTML; //returns first element in filtered array
 	return searchQ;
@@ -119,18 +119,18 @@ function isNumeric(n) {
 
 //Gets story IDs by author
 function getStoryIDs(eleArr){ //pass in array of elements(a)
-  var storyIDs = [];
-	for (var i=0, len=eleArr.length; i<len; i++) {
-		var temp = eleArr[i].href.split("/");//splits each URL into sections by '/'
-		for (var j=0, len2=temp.length; j<len2; j++){
-			var next = j+1;
-			if (temp[j]==="works" && next<len2){ //adds numbers following "works/" to storyID array
-				if (isNumeric(temp[next]))  //if value is number
-				  storyIDs.push(temp[next]);//add to storyIDs array
-      }
-		}
-	}	
-	return storyIDs;
+    var storyIDs = [];
+    for (var i=0, len=eleArr.length; i<len; i++) {
+        var temp = eleArr[i].href.split("/");//splits each URL into sections by '/'
+        for (var j=0, len2=temp.length; j<len2; j++){
+            var next = j+1;
+            if (temp[j]==="works" && next<len2){ //adds numbers following "works/" to storyID array
+                if (isNumeric(temp[next]))  //if value is number
+                    storyIDs.push(temp[next]);//add to storyIDs array
+            }
+        }
+    }
+    return storyIDs;
 }
 
 //Clears printed list of links
@@ -155,19 +155,19 @@ function showTextAreas() {
 
 //Replace formatted array to Div InnerHTML
 function printNewArrayToDivInnerHTML(divName, array) {
-  showTextAreas();
-  divName.innerHTML = "";
-  for (i=0, j=array.length; i<j; i++){
-	  divName.innerHTML += array[i] + "\n";
-	}
+    showTextAreas();
+    divName.innerHTML = "";
+    for (i=0, j=array.length; i<j; i++){
+        divName.innerHTML += array[i] + "\n";
+    }
 }
 
 //Replace links of works from author
 function printNewAuthorFicLinks(divName, storyIDs, linkBeginning) {
-  divName.innerHTML = "";
-	for (i=0, j=storyIDs.length; i<j; i++){
-		divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "\n";
-	}
+    divName.innerHTML = "";
+    for (i=0, j=storyIDs.length; i<j; i++){
+        divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "\n";
+    }
 }
 
 //Replace links from next page of author works
@@ -184,11 +184,11 @@ function getNewNextPageLinks(ao3LinkToAuthorWorks, response) {
 
 //adds all links to array
 function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
-  var arr = parseHTMLforLinks(responseNext);//gets links from HTML
-	var storyIDsNext = getStoryIDs(arr);		  //gets story IDs from element array
-	var storyIDs = sortAscUniq(storyIDsNext);//alphabetical, unique storyID values
-  var arrAll = arrAll.concat(storyIDs);			//add new storyIDs to arrAll (all links array)
-	return arrAll;	//return updated array
+    var arr = parseHTMLforLinks(responseNext);   //gets links from HTML
+    var storyIDsNext = getStoryIDs(arr);		  //gets story IDs from element array
+    var storyIDs = sortAscUniq(storyIDsNext);    //alphabetical, unique storyID values
+    var arrAll = arrAll.concat(storyIDs);		  //add new storyIDs to arrAll (all links array)
+    return arrAll;	                             //return updated array
 }
 
 //test function
@@ -219,14 +219,14 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var arrAll = [];
 	for (var i=1, j=numWorksPages+1; i<j; i++) {
-	  var tempWorksPage = ao3Works.concat(i.toString());
-		sendRequest(tempWorksPage, function (responseNext) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
-			arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
-			arrAll = sortAscUniq(arrAll);
-			printNewArrayToDivInnerHTML(printWorks, arrAll);
-			printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
-			printNSF.innerHTML = "Stories found: ".bold() + arrAll.length;
-		});
+        var tempWorksPage = ao3Works.concat(i.toString());
+        sendRequest(tempWorksPage, function (responseNext) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
+            arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+            arrAll = sortAscUniq(arrAll);
+            printNewArrayToDivInnerHTML(printWorks, arrAll);
+            printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
+            printNSF.innerHTML = "Stories found: ".bold() + arrAll.length;
+        });
 	}
 }
 
@@ -241,24 +241,24 @@ function printSearchList(arr, numSearchPages) {
 	var printURLs = document.getElementById('printURLs');
 	var printNSF = document.getElementById('printNumStoriesFound');
 	for (var i=1, j=numSearchPages+1; i<j; i++) {
-	  var tempSearchPage = ao3Search + i + searchQuery;
-		if (i<j-1){
-			sendRequest(tempSearchPage, function (responseNext) {
-				arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
-				arrAll = sortAscUniq(arrAll);
-				printNSF.innerHTML = "Stories found (so far): ".bold() + arrAll.length;
-				printNewArrayToDivInnerHTML(printWorks, arrAll);
-				printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);		
-			});
-		}else if (i >= j-1) {
-			sendRequest(tempSearchPage, function (responseNext) {
-				arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
-				arrAll = sortAscUniq(arrAll);
-				printNSF.innerHTML = "Stories found : ".bold() + arrAll.length + " (all stories found)";
-				printNewArrayToDivInnerHTML(printWorks, arrAll);
-				printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);		
-			});
-		}
+        var tempSearchPage = ao3Search + i + searchQuery;
+        if (i<j-1){
+            sendRequest(tempSearchPage, function (responseNext) {
+                arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+                arrAll = sortAscUniq(arrAll);
+                printNSF.innerHTML = "Stories found (so far): ".bold() + arrAll.length;
+                printNewArrayToDivInnerHTML(printWorks, arrAll);
+                printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
+            });
+        } else if (i >= j-1) {
+            sendRequest(tempSearchPage, function (responseNext) {
+                arrAll = addNextPageLinksToArr(ao3LinkToAuthorWorks, responseNext, arrAll);
+                arrAll = sortAscUniq(arrAll);
+                printNSF.innerHTML = "Stories found : ".bold() + arrAll.length + " (all stories found)";
+                printNewArrayToDivInnerHTML(printWorks, arrAll);
+                printNewAuthorFicLinks(printURLs, arrAll, ao3LinkToAuthorWorks);
+            });
+        }
 	}
   return tempSearchPage;
 }
@@ -307,8 +307,8 @@ function passLinksToProcess(authorName) {
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
 
-	var Printao3AuthorURL = document.getElementById('printAuthorURL');
-	Printao3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
+	var printAo3AuthorURL = document.getElementById('printAuthorURL');
+	printAo3AuthorURL.innerHTML = 'Author URL:  '.bold() + ao3LinkToAuthor;
 	var result = document.getElementById('result');
 	result.innerHTML = 'Author: '.bold() + authorName;
 	sendRequest(ao3LinkToAuthorWorks2, function (response) { 	//Get HTML from URL based on input //ao3LinkToFrayachWorks
@@ -318,43 +318,38 @@ function passLinksToProcess(authorName) {
 
 // hard-coded test function //for DEBUGGING
 function getUserNameHARD() {
-  clearOutput();
-	var authorName = 'littleblackdog';
-	var userInput = String(authorName);
-	
-	//check user input
-	if (authorName.length < 3) {
-		result.textContent = 'ERROR:  Input must contain at least 3 characters';
-		printWorks.style.visibility = printURLs.style.visibility = "hidden";
-	} else if ( userInput.includes("org/users/") ) {
-	  var authorNameParse = userInput.split("/")[4];
-		authorName = authorNameParse;
-		passLinksToProcess(authorName);
-	} else if (userInput.includes("org/works/")) {
+    clearOutput();
+    var authorName = 'littleblackdog';
+    var userInput = String(authorName);
+
+    //check user input
+    if (authorName.length < 3) {
+        result.textContent = 'ERROR:  Input must contain at least 3 characters';
+        printWorks.style.visibility = printURLs.style.visibility = "hidden";
+    } else if ( userInput.includes("org/users/") ) {
+      var authorNameParse = userInput.split("/")[4];
+        authorName = authorNameParse;
+        passLinksToProcess(authorName);
+    } else if (userInput.includes("org/works/")) {
     sendRequest(userInput, function (response){
-			authorName = parseHTMLforAuthor(response);
-			passLinksToProcess(authorName);
-	  });
-	} else {
-		passLinksToProcess(authorName);
-	}
+            authorName = parseHTMLforAuthor(response);
+            passLinksToProcess(authorName);
+      });
+    } else {
+        passLinksToProcess(authorName);
+    }
 }
 
-var subButton = document.getElementById('subButton'); 
-subButton.addEventListener('click', getUserName, false);// use an event listener for the event
-var testButton = document.getElementById('testButton'); 
-testButton.addEventListener('click', getUserNameHARD, false);
-var copyURLsBtn = document.querySelector('#copyURLsButton');
-copyURLsBtn.addEventListener('click', function () {
-  var urlField = document.querySelector('#printURLs');
-  var range = document.createRange();           // create a Range object
-  range.selectNode(urlField);					 // set the Node to select the "range"
-  window.getSelection().addRange(range);        // add the Range to the set of window selections
-  document.execCommand('copy');				     // execute 'copy', can't 'cut' in this case
-	clearSelection();										// DESELECTS ALL TEXT
-}, false);
-var printURLs = document.getElementById('printURLs');		//later VISIBLE //prints storyURLs
-printURLs.style.visibility = "hidden";
-var printIDs = document.getElementById('printWorks');		//later VISIBLE //prints storyIDs
-printIDs.style.visibility = "hidden";
+var subButton = document.getElementById('subButton').addEventListener('click', getUserName, false);// use an event listener for the event
+var testButton = document.getElementById('testButton').addEventListener('click', getUserNameHARD, false);
+var copyURLsBtn = document.querySelector('#copyURLsButton').addEventListener('click', function () {
+            var urlField = document.querySelector('#printURLs');
+            var range = document.createRange();         // create a Range object
+            range.selectNode(urlField);				 // set the Node to select the "range"
+            window.getSelection().addRange(range);      // add the Range to the set of window selections
+            document.execCommand('copy');				 // execute 'copy', can't 'cut' in this case
+            clearSelection();							 // DESELECTS ALL TEXT
+        }, false);
+var printURLs = document.getElementById('printURLs').style.visibility = "hidden";
+var printIDs = document.getElementById('printWorks').style.visibility = "hidden";
 var ficOutputArea = document.getElementById('fic-output').style.visibility = "hidden";
