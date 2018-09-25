@@ -1,5 +1,8 @@
+var printWorks = document.getElementById('printWorks');   //VISIBLE  //prints storyIDs
+
 // get HTML from webpage URL
 function sendRequest(url, callback) {
+    console.log("sendRequest()");
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState == 4 && xhr.status == 200) {
@@ -12,6 +15,7 @@ function sendRequest(url, callback) {
 
 //get number of author works pages
 function getNumWorksPages(arr) {
+    console.log("getNumWorksPages()");
 	var largestNum = 1;
 	for (var i=0, len=arr.length; i<len; i++) {
   	var tempLink = String(arr[i]);
@@ -25,6 +29,7 @@ function getNumWorksPages(arr) {
 
 //get number of Search pages (up to 50)
 function getNumSearchPages(arr) {
+    console.log("getNumSearchPages()");
 	var largestNum = 1;
 	for (var i=0, len=arr.length; i<len; i++) {
   	var tempLink = String(arr[i]);
@@ -44,6 +49,7 @@ function getNumSearchPages(arr) {
 
 //sorts arrays in alphabetical order and removes duplicates
 function sortAscUniq(array) {
+    console.log("sortAscUniq()");
 	array = array.sort(function(a, b){return a-b}); //sort numerical/ascending order
 	array = uniq_fast(array); // removes duplicates from links list
 	return array;
@@ -51,6 +57,7 @@ function sortAscUniq(array) {
 
 //Removes duplicates from links list
 function uniq_fast(a) {
+    console.log("uniq_fast()");
 	var seen = {}, out = [];
 	var len = a.length;
 	var j = 0;
@@ -66,6 +73,7 @@ function uniq_fast(a) {
 
 //Deselects all text
 function clearSelection() {
+    console.log("clearSelection()");
     if ( document.selection ) {
         document.selection.empty();
     } else if ( window.getSelection ) {
@@ -75,6 +83,7 @@ function clearSelection() {
 
 //parses webpage HTML for links
 function parseHTMLforLinks(response) {
+    console.log("parseHTMLforLinks()");
 	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
 	el.innerHTML = response;									// add html to DOM
 	var nl = el.getElementsByTagName('a');    // Live NodeList of anchor elements
@@ -85,6 +94,7 @@ function parseHTMLforLinks(response) {
 
 //parses work webpage HTML for author
 function parseHTMLforAuthor(response) {
+    console.log("parseHTMLforAuthor()");
 	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
 	el.innerHTML = response;									// add html to DOM
 
@@ -100,6 +110,7 @@ function parseHTMLforAuthor(response) {
 
 //parses search webpage for Search query
 function parseHTMLforSearchQuery(response) {
+    console.log("parseHTMLforSearchQuery()");
 	var el = document.createElement('html');  // create dummy HTML document to create NodeList of links
 	el.innerHTML = response;									// add html to DOM
 	var hdg = el.getElementsByTagName('h4'), //find all heading_4
@@ -114,11 +125,13 @@ function parseHTMLforSearchQuery(response) {
 
 //checks if value is a number
 function isNumeric(n) {
+    console.log("isNumeric()");
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 //Gets story IDs by author
 function getStoryIDs(eleArr){ //pass in array of elements(a)
+    console.log("getStoryIDs()");
     var storyIDs = [];
     for (var i=0, len=eleArr.length; i<len; i++) {
         var temp = eleArr[i].href.split("/");//splits each URL into sections by '/'
@@ -135,6 +148,7 @@ function getStoryIDs(eleArr){ //pass in array of elements(a)
 
 //Clears printed list of links
 function clearOutput(){ //used after "Get links!" button is clicked
+    console.log("clearOutput()");
 	var printArr = document.getElementById('printArr');	    //prints ALL links from HTML
 	var printLL = document.getElementById('printLinkList'); //prints links w/o HTTP
 	var printSortedLinks = document.getElementById('printSortedLinks');	  //prints edited, sorted links list   
@@ -145,6 +159,7 @@ function clearOutput(){ //used after "Get links!" button is clicked
 
 //Shows TextAreas for IDs and URLs
 function showTextAreas() {
+    console.log("showTextAreas()");
 	var printWorks = document.getElementById('printWorks');   //VISIBLE  //prints storyIDs
 	var printURLs = document.getElementById('printURLs');		//VISIBLE //prints storyURLs
 	var ficOutputArea = document.getElementById('fic-output');
@@ -155,6 +170,7 @@ function showTextAreas() {
 
 //Replace formatted array to Div InnerHTML
 function printNewArrayToDivInnerHTML(divName, array) {
+    console.log("printNewArrayToDivInnerHTML()");
     showTextAreas();
     divName.innerHTML = "";
     for (i=0, j=array.length; i<j; i++){
@@ -164,6 +180,7 @@ function printNewArrayToDivInnerHTML(divName, array) {
 
 //Replace links of works from author
 function printNewAuthorFicLinks(divName, storyIDs, linkBeginning) {
+    console.log("printNewAuthorFicLinks");
     divName.innerHTML = "";
     for (i=0, j=storyIDs.length; i<j; i++){
         divName.innerHTML += linkBeginning + "/" + storyIDs[i] + "\n";
@@ -172,6 +189,7 @@ function printNewAuthorFicLinks(divName, storyIDs, linkBeginning) {
 
 //Replace links from next page of author works
 function getNewNextPageLinks(ao3LinkToAuthorWorks, response) {
+    console.log("getNewNextPageLinks()");
 	var printWorks = document.getElementById('printWorks'); //VISIBLE	
 	var printURLs = document.getElementById('printURLs');		//VISIBLE
 	
@@ -184,6 +202,7 @@ function getNewNextPageLinks(ao3LinkToAuthorWorks, response) {
 
 //adds all links to array
 function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
+    console.log("addNextPageLinksToArr()");
     var arr = parseHTMLforLinks(responseNext);   //gets links from HTML
     var storyIDsNext = getStoryIDs(arr);		  //gets story IDs from element array
     var storyIDs = sortAscUniq(storyIDsNext);    //alphabetical, unique storyID values
@@ -193,12 +212,14 @@ function addNextPageLinksToArr(linkWorks, responseNext, arrAll) {
 
 //test function
 function printArrAll(arrAll) {
+    console.log("printArrAll()");
 	var arrAll = sortAscUniq(arrAll);
 	return arrAll;
 }
 
 //Prints list of storyIDs and storyURLs
 function printList(ao3LinkToAuthorWorks, response, authorName) {
+    console.log("printList()");
 	var arr = [], storyIDs = [], storyIDsAll = [];          //initialize arrays
 	var printNSF = document.getElementById('printNumStoriesFound');		//VISIBLE
 	var printWorks = document.getElementById('printWorks'); 					//make VISIBLE	
@@ -232,6 +253,7 @@ function printList(ao3LinkToAuthorWorks, response, authorName) {
 
 //print links from searchURL
 function printSearchList(arr, numSearchPages) {
+    console.log("printSearchList()");
   var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
   var ao3Search = 'http://archiveofourown.org/works/search?commit=Search&page=';
 	var searchQuery = '&utf8=%E2%9C%93&work_search%5Bbookmarks_count%5D=&work_search%5Bcharacter_names%5D=&work_search%5Bcomments_count%5D=&work_search%5Bcomplete%5D=1&work_search%5Bcreator%5D=&work_search%5Bfandom_names%5D=&work_search%5Bfreeform_names%5D=&work_search%5Bhits%5D=&work_search%5Bkudos_count%5D=&work_search%5Blanguage_id%5D=&work_search%5Bquery%5D=&work_search%5Brating_ids%5D=&work_search%5Brelationship_names%5D=&work_search%5Brevised_at%5D=&work_search%5Bshow_restricted%5D=true&work_search%5Bsingle_chapter%5D=0&work_search%5Bsort_column%5D=&work_search%5Bsort_direction%5D=&work_search%5Btitle%5D=&work_search%5Bword_count%5D=';
@@ -265,9 +287,12 @@ function printSearchList(arr, numSearchPages) {
 
 // the function which handles the input field logic
 function getUserName() {
+    console.log("getUserName()");
   clearOutput(); //clears output on subsequent calls
 	var authorName = document.getElementById('nameField').value; //gets user inputted author
 	var userInput = String(authorName);
+	var printWorks = document.getElementById('printWorks');   //VISIBLE  //prints storyIDs
+	var printURLs = document.getElementById('printURLs');
 	
 	//check user input
 	if (authorName.length < 3) {
@@ -291,7 +316,7 @@ function getUserName() {
 		passLinksToProcess(authorName);
 	} else if (userInput.includes("org/works/")) {
 	  showTextAreas();
-    sendRequest(userInput, function (response){
+       sendRequest(userInput, function (response){
 			authorName = parseHTMLforAuthor(response);//find authorName from workURL
 			passLinksToProcess(authorName);
 	  });
@@ -303,6 +328,7 @@ function getUserName() {
 
 //Passes links using authorName
 function passLinksToProcess(authorName) {
+    console.log("passLinksToProcess()");
  	var ao3LinkToAuthor = 'http://archiveofourown.org/users/' + authorName;
 	var ao3LinkToAuthorWorks = 'http://archiveofourown.org/works';
 	var ao3LinkToAuthorWorks2 = 'http://archiveofourown.org/users/' + authorName + '/works?page=';
@@ -318,6 +344,7 @@ function passLinksToProcess(authorName) {
 
 // hard-coded test function //for DEBUGGING
 function getUserNameHARD() {
+    console.log("getUserNameHARD()");
     clearOutput();
     var authorName = 'littleblackdog';
     var userInput = String(authorName);
@@ -340,6 +367,7 @@ function getUserNameHARD() {
     }
 }
 
+    console.log("DONE DONE DONE ===================================");
 var subButton = document.getElementById('subButton').addEventListener('click', getUserName, false);// use an event listener for the event
 var testButton = document.getElementById('testButton').addEventListener('click', getUserNameHARD, false);
 var copyURLsBtn = document.querySelector('#copyURLsButton').addEventListener('click', function () {
